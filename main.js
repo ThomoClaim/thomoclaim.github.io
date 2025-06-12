@@ -120,8 +120,7 @@ function drawPie() {
   const radius = size * 0.38; // 68 on 180 canvas, leaves room for labels
 
   const data = [
-    { color: "#1abc9c", value: 98, label: "98% LP" },
-    { color: "#e67e22", value: 2, label: "2% Rewards" }
+    { color: "#1abc9c", value: 100, label: "100% LP Locked" }
   ];
 
   let total = data.reduce((a, b) => a + b.value, 0);
