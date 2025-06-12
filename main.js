@@ -105,29 +105,64 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// --- Pie Chart for Tokenomics ---
-const ctx = document.getElementById('tokenomics-pie').getContext('2d');
-const drawPie = () => {
+const canvas = document.getElementById('tokenomics-pie');
+const ctx = canvas.getContext('2d');
+
+// For retina displays (optional)
+const size = 180;
+canvas.width = size;
+canvas.height = size;
+
+function drawPie() {
+  ctx.clearRect(0, 0, size, size);
+  const centreX = size / 2;
+  const centreY = size / 2;
+  const radius = size * 0.38; // 68 on 180 canvas, leaves room for labels
+
   const data = [
-    {color: "#1abc9c", value: 98, label: "Liquidity Pool"},
-    {color: "#e67e22", value: 2, label: "Community Rewards"}
+    { color: "#1abc9c", value: 98, label: "98% LP" },
+    { color: "#e67e22", value: 2, label: "2% Rewards" }
   ];
-  let total = data.reduce((a,b)=>a+b.value,0);
+
+  let total = data.reduce((a, b) => a + b.value, 0);
   let start = -0.5 * Math.PI;
+
   data.forEach(slice => {
+    // Draw the pie slice
     ctx.beginPath();
-    ctx.moveTo(80,80);
-    ctx.arc(80,80,78, start, start + 2*Math.PI*(slice.value/total));
+    ctx.moveTo(centreX, centreY);
+    ctx.arc(
+      centreX, centreY,
+      radius,
+      start,
+      start + 2 * Math.PI * (slice.value / total)
+    );
+    ctx.closePath();
     ctx.fillStyle = slice.color;
     ctx.fill();
-    start += 2*Math.PI*(slice.value/total);
+    start += 2 * Math.PI * (slice.value / total);
   });
-  ctx.font = "13px Inter, Arial, sans-serif";
-  ctx.fillStyle = "#fff";
-  ctx.fillText("98% LP", 18, 90);
-  ctx.fillText("2% Rewards", 95, 150);
-};
+
+  // Draw labels inside slices
+  start = -0.5 * Math.PI;
+  data.forEach(slice => {
+    const angle = start + Math.PI * (slice.value / total);
+    const labelRadius = radius * 0.7;
+    ctx.font = "bold 15px Inter, Arial, sans-serif";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      slice.label,
+      centreX + Math.cos(angle) * labelRadius,
+      centreY + Math.sin(angle) * labelRadius
+    );
+    start += 2 * Math.PI * (slice.value / total);
+  });
+}
+
 drawPie();
+
 
 // --- Copy Contract Address on Click ---
 const addrDiv = document.getElementById('tokenAddress');
