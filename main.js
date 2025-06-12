@@ -13,47 +13,44 @@ function parseQueryParams() {
 
 const params = parseQueryParams();
 
-// --- Dynamic Replace Content ---
 window.addEventListener('DOMContentLoaded', () => {
-  // Token Info
+  // --- Set Document Title ---
   document.title = params.title || "TokenNameHere | $TokenTickerHere - The Ultimate Meme Token";
 
-  // Logo
+  // --- Logo Image ---
   const logo = document.querySelector('.logo');
   if (logo && params.logo_image) logo.src = params.logo_image;
 
-  // Titles
+  // --- Main Token Title/Subtitles ---
   const tokenTitle = document.querySelector('.token-title');
-  if (tokenTitle) tokenTitle.innerHTML =
-    `${params.token_name || 'TokenNameHere'} <span style="font-size:1.2rem; font-weight:600;">($${params.token_ticker || 'TokenTickerHere'})</span>`;
+  if (tokenTitle)
+    tokenTitle.innerHTML = `${params.token_name || 'TokenNameHere'} <span style="font-size:1.2rem; font-weight:600;">($${params.token_ticker || 'TokenTickerHere'})</span>`;
 
   const tokenSubtitle = document.querySelector('.token-subtitle');
   if (tokenSubtitle && params.title) tokenSubtitle.textContent = params.title;
 
-  // Contract Address
+  // --- Contract Address Top ---
   const addrDiv = document.getElementById('tokenAddress');
   if (addrDiv && params.contract_address) {
     addrDiv.childNodes[0].nodeValue = params.contract_address;
     addrDiv.dataset.contract = params.contract_address;
   }
 
-  // Tokenomics Table
+  // --- Tokenomics Table ---
   if (params.contract_address) {
-    const tables = document.querySelectorAll('.tokenomics-table td');
-    tables.forEach(td => {
+    document.querySelectorAll('.tokenomics-table td').forEach(td => {
       if (td.textContent.includes('TokenContractAddressHere'))
         td.textContent = params.contract_address;
     });
   }
   if (params.token_ticker) {
-    const tables = document.querySelectorAll('.tokenomics-table td');
-    tables.forEach(td => {
+    document.querySelectorAll('.tokenomics-table td').forEach(td => {
       if (td.textContent.includes('$TokenTickerHere'))
         td.textContent = `1,000,000,000 $${params.token_ticker}`;
     });
   }
 
-  // Features
+  // --- Features ---
   for (let i = 1; i <= 4; ++i) {
     const featureCard = document.querySelectorAll('.feature-card')[i - 1];
     if (!featureCard) continue;
@@ -65,7 +62,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (desc && params[`feature_desc_${i}`]) desc.textContent = params[`feature_desc_${i}`];
   }
 
-  // Roadmap
+  // --- Roadmap ---
   for (let i = 1; i <= 3; ++i) {
     const phase = document.querySelectorAll('.phase')[i - 1];
     if (!phase) continue;
@@ -83,7 +80,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Socials
+  // --- Socials ---
   if (params.social_twitter_link) {
     document.querySelectorAll('.social-link')[0].href = params.social_twitter_link;
   }
@@ -91,14 +88,24 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.social-link')[1].href = params.social_telegram_link;
   }
 
-  // Footer contract address
+  // --- Footer Contract Address ---
   const footerAddr = document.querySelector('footer .token-address');
   if (footerAddr && params.contract_address) {
     footerAddr.textContent = params.contract_address;
   }
+
+  // --- Dynamic "Why TokenNameHere?" heading using ID ---
+  const whyHeading = document.getElementById('why-heading');
+  if (whyHeading && params.why_heading) whyHeading.textContent = params.why_heading;
+
+  // --- Dynamic pump.fun Buttons (all with class 'pumpfun-btn') ---
+  document.querySelectorAll('.pumpfun-btn').forEach(pumpfunBtn => {
+    if (params.pumpfun_url) pumpfunBtn.onclick = () => window.open(params.pumpfun_url, '_blank');
+    if (params.pumpfun_label) pumpfunBtn.textContent = params.pumpfun_label;
+  });
 });
 
-// --- Pie chart for tokenomics ---
+// --- Pie Chart for Tokenomics ---
 const ctx = document.getElementById('tokenomics-pie').getContext('2d');
 const drawPie = () => {
   const data = [
@@ -122,7 +129,7 @@ const drawPie = () => {
 };
 drawPie();
 
-// --- Copy contract address on click ---
+// --- Copy Contract Address on Click ---
 const addrDiv = document.getElementById('tokenAddress');
 const copyStatus = document.getElementById('copyStatus');
 if (addrDiv) {
@@ -137,7 +144,7 @@ if (addrDiv) {
   });
 }
 
-// --- Parallax effect on logo ---
+// --- Parallax Effect on Logo ---
 const logo = document.querySelector('.logo');
 if (logo) {
   document.addEventListener('mousemove', e => {
